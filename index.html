@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>PO Amendment Generator Beta</title>
+  <title>PO Amendment Generator</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: auto; }
     label, select, input, textarea { display: block; margin: 10px 0; }
-    textarea { width: 100%; height: 250px; }
+    textarea { width: 100%; height: 300px; }
   </style>
 </head>
 <body>
@@ -32,6 +32,9 @@
   <input type="number" id="gtin2" placeholder="4061 4635 15865 - Qty (2 units/DP)">
   <input type="number" id="gtin3" placeholder="4061 4617 55737 - Qty (5 units/DP)">
 
+  <label for="name">Your Name (for sign-off):</label>
+  <input type="text" id="name" placeholder="e.g., Xinyi Jiang">
+
   <button onclick="generateText()">Generate Email</button>
   <textarea id="output" readonly></textarea>
 
@@ -41,7 +44,9 @@
       'Minchinbury': 120,
       'Regency Park': 132,
       'Derrimut': 204,
-      'Dandenong': 204
+      'Dandenong': 204,
+      'Brendale': 120,
+      'Stapylton': 120
     };
 
     function generateText() {
@@ -50,6 +55,7 @@
       const gtin1 = parseInt(document.getElementById('gtin1').value || 0);
       const gtin2 = parseInt(document.getElementById('gtin2').value || 0);
       const gtin3 = parseInt(document.getElementById('gtin3').value || 0);
+      const name = document.getElementById('name').value.trim();
 
       const dp1 = gtin1 / 5;
       const dp2 = gtin2 / 2;
@@ -68,7 +74,7 @@
       let newDP2 = Math.round(dp2 * ratio);
       let newDP3 = Math.round(dp3 * ratio);
 
-      // Try to fine-tune rounding if total isn't matching
+      // Fine-tune rounding
       let totalDP = newDP1 + newDP2 + newDP3;
       let diff = targetDP - totalDP;
 
@@ -97,7 +103,9 @@
         `                                                                                  T o t a l                              ${targetDP} dp\n` +
         `                                                                                                            ========\n`;
 
-      document.getElementById('output').value = subject + "\n\n" + header + table;
+      const signoff = `\n\nThank you.\n\nKind regards,\n${name}`;
+
+      document.getElementById('output').value = subject + "\n\n" + header + table + signoff;
     }
   </script>
 </body>
